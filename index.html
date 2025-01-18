@@ -19,7 +19,7 @@
     <video controls=""><source src="imgs/BLuECrickets.mov" type="video/mp4"></video>
     <p>We live in an ever growing ecosystem of connected devices. Some of these networks are at the forefront of our lives, for example we might immediately recognize when the wifi goes out or we can’t get a mobile data signal. But there other networks that are less visible, were we might not even realize that we are a persistent node always sending and receiving tiny bits of data.</p>
 
-    <p>BLuE Crickets scan for Bluetooth Low Energy devices. It translates the number and signal strength of nearby devices into sound and light, seeking to focus attention on one often ignored system in our lives.</p>
+    <p>BLuE Crickets scan for Bluetooth Low Energy devices. They translate the number and signal strength of nearby devices into sound and light, seeking to focus attention on one often ignored system in our lives.</p>
 
     <h2>Hardware</h2>
     <img src="imgs/BLuECrickets.png">
@@ -79,11 +79,24 @@
 }
 </code></pre>
 
-
+<h2>Project Inspiration</h2>
     <p>During the Radical Networks class during the Berlin session of <a href="https://itp.nyu.edu/lowres/">NYU IMA Low Res</a> taught by <a href="https://www.chootka.com/about/">Sara Grant</a>, I discovered that an ESP32 board could act as a PAX counter and gather nearby BLE signals. Turning on a simple Meshtastic PAX counter program, I was surprised to see the amount of nearby devices.</p>
     <p>I began to think of these devices as bugs, both in parlance of surveillance and as creatures in their own right, communicating in a language impossible to understand. Like the drone of crickets on a summer night, these chips are also chirping their signals.</p>
-    
+    <h2>What is Bluetooth Low Energy?</h2>
+    <p>You likely know what Bluetooth is; this wireless communication protocol connects our phones, computers and headphones through radio waves. Every Bluetooth enabled devices has a special chip that responsible for this communication.</p> 
 
+    <p>Bluetooth Low Energy (BLE) is also a wireless communication technology and is powered by another chip. Surprise! It gets its name because BLE chips use less energy that a traditional Bluetooth devices. It is extremely likely that you have a BLE device with you at all times, you guessed it, your phone!</p>
+
+    <p>You might be thinking, “what is this other chip that I’ve never heard about before actually doing?” Well, a lot. If you are the proud owner of an iPhone, your device is constantly pinging other nearby Apple devices. This is how the “Find My” network is able to locate your the phone you left in the taxi last night as you painfully watch to travel around the city. It is unclear if turning off the “Find My” feature will even remove your device from this network.</p>
+
+
+    <p>With all the BLE chips around, you can also get a pretty good idea of how many people are around assuming that most of us our carrying a phone with BLE. This is the idea of a PAX counter, polling for BLE signals as a proxy for people.</p>
+
+    <p>BLuE Crickets works on this principle, it identifies the number and signal strength of nearby BLE devices and representing this data using a small piezo speaker and an OLED screen.</p>
+
+    <h2>Next Steps</h2>
+    <p>In the future I would like to explore looking for BLE packets and translating that data into images and sound.<p>
+    <p>I would also like to research how this is a privacy risk and could be used for unwanted surveillance.</p>
     <footer>
       <p><a href="https://adamdriggers.com">adam driggers</a> | <a href="https://github.com/awdriggs/BLuECrickets">project github</a> | <a href="https://awd.technology">more</a></p>
     </footer>
