@@ -6,14 +6,96 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="description" content="">
   <link rel="icon" href="favicon.png">
-  <link rel="stylesheet" href="style.css">
-   
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/style.css">
+  <link rel="stylesheet" href="styles/default.min.css">
+  <link rel="stylesheet" href="styles/arduino-light.min.css">
 </head>
 <body>
-  <h1>BLuE Crickets</h1>
-  <p>We live in an ever growing ecosystem of connected devices. Some of these networks are at the forefront of our lives, for example we might immediately recognize when the wifi goes out or we can’t get a mobile data signal. But there other networks that are less visible, were we might not even realize that we are a persistent node always sending and receiving tiny bits of data.</p>
+  <div id="page-wrap">
+    <h1>BLuE Crickets</h1>
+    <video controls=""><source src="imgs/BLuECrickets.mov" type="video/mp4"></video>
+    <p>We live in an ever growing ecosystem of connected devices. Some of these networks are at the forefront of our lives, for example we might immediately recognize when the wifi goes out or we can’t get a mobile data signal. But there other networks that are less visible, were we might not even realize that we are a persistent node always sending and receiving tiny bits of data.</p>
 
-  <p>BLuE Crickets scans for Bluetooth Low Energy devices. It translates the number and signal strength of nearby devices into sound and light, seeking to focus attention on one often ignored system in our lives.</p>
-  
+    <p>BLuE Crickets scan for Bluetooth Low Energy devices. It translates the number and signal strength of nearby devices into sound and light, seeking to focus attention on one often ignored system in our lives.</p>
+
+    <h2>Hardware</h2>
+    <img src="imgs/BLuECrickets.png">
+    <h2>Software</h2>
+
+    <p>The software consists of a custom Arduino sketch. When the program starts it begins to look for nearby BLE signals. It counts the number of devices and collects the signal strength. No identifying information is collected, although it can show the mac address and manufacturer id that each device is broadcasting.</p>
+
+    <p>The <span class="inline-code">chirp()</span> function converts the collected data into the audio and image. The length of a single chirp is determined by the number of devices divided by 10. So if 84 devices are found, the chirp will be 8 cycles of high/low frequency.</p>
+
+    <p>Signal strength represents how close devices are to the BLuE Cricket. The code calculates the average signal strength and maps this value between 4000 Hertz and 8000 hertz, so if devices are closer then the chirps will be a higher pitch.</p>
+
+    <p>This function also controls the screen output. A rectangular bar is centered in the screen. The width of the bar represents the frequency of the chirp.</p>
+
+    <p>Here is the <span class="inline-code">chirp()</span> function in its entirety.</p>
+
+    <pre><code class="language-arduino">
+  void chirp(){
+  if (deviceCount == 0) return; // Safety check
+
+  rssiAvg = totalRSSI / deviceCount; //calc from scan totals
+
+  Serial.print("rssiAvg: ");
+  Serial.println(rssiAvg);
+
+  chirpFreq = map(rssiAvg, -100, -20, lowFreq, highFreq); //tune, most averages in the the high 80s to low 90s
+
+  Serial.print("chirp freq: ");
+  Serial.println(chirpFreq);
+  int size;
+
+  for(int count = 0; count &lt; deviceCount/10; count++){
+    //ramp up
+    for (int freq = lowFreq; freq &lt;= chirpFreq; freq += 100) { // Increase frequency in steps of 100 Hz
+      size = map(freq, lowFreq, highFreq, 10, 128);
+      ledcWriteTone(BUZZER_PIN, freq);
+      /* display.println(String(freq)); */
+      drawRect(size);
+      display.display();
+      delay(10);             // Wait 10 ms before the next frequency
+    }
+
+    //hold high freq
+    ledcWriteTone(BUZZER_PIN, chirpFreq);
+    delay(100);
+
+    display.clear();
+    drawRect(0);
+    display.display();
+    
+    //hold low freq
+    ledcWriteTone(BUZZER_PIN, lowFreq);
+    delay(100);
+  }
+
+  display.clear();
+  ledcWriteTone(BUZZER_PIN, 0);
+}
+</code></pre>
+
+
+    <p>During the Radical Networks class during the Berlin session of <a href="https://itp.nyu.edu/lowres/">NYU IMA Low Res</a> taught by <a href="https://www.chootka.com/about/">Sara Grant</a>, I discovered that an ESP32 board could act as a PAX counter and gather nearby BLE signals. Turning on a simple Meshtastic PAX counter program, I was surprised to see the amount of nearby devices.</p>
+    <p>I began to think of these devices as bugs, both in parlance of surveillance and as creatures in their own right, communicating in a language impossible to understand. Like the drone of crickets on a summer night, these chips are also chirping their signals.</p>
+    
+    <h2>What is Bluetooth Low Energy?</h2>
+    <p>
+
+    </p>
+
+    <footer>
+      <p><a href="https://adamdriggers.com">adam driggers</a> | <a href="https://github.com/awdriggs/BLuECrickets">project github</a> | <a href="https://awd.technology">more</a></p>
+    </footer>
+  </div>
+
+  <script src="js/highlight.min.js"></script> 
+  <script>
+  hljs.highlightAll();
+  </script>
 </body>
 </html>
